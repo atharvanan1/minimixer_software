@@ -135,7 +135,6 @@ static void initMcu_clocks(void)
 //    CMU_ClockSelectSet(cmuClock_LFB, cmuSelect_PLFRCO);
 //    CMU_ClockSelectSet(cmuClock_LFE, cmuSelect_PLFRCO);
 //  #endif
-
   // Initialize LFXO
   CMU_LFXOInit_TypeDef lfxoInit = BSP_CLK_LFXO_INIT;
   lfxoInit.ctune = BSP_CLK_LFXO_CTUNE;

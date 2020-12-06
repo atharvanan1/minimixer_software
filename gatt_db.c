@@ -92,7 +92,7 @@ GATT_DATA(const struct bg_gattdb_buffer_with_len	bg_gattdb_data_attribute_field_
 	.len=5,
 	.data={0x02,0x11,0x00,0x01,0x2a,}
 };
-uint8_t bg_gattdb_data_attribute_field_14_data[8]={0x4d,0x49,0x44,0x49,0x20,0x63,0x6f,0x6e,};
+uint8_t bg_gattdb_data_attribute_field_14_data[8]={0x4d,0x69,0x6e,0x69,0x6d,0x69,0x78,0x65,};
 GATT_DATA(const struct bg_gattdb_attribute_chrvalue	bg_gattdb_data_attribute_field_14 ) = {
 	.properties=0x0a,
 	.index=4,
