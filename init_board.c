@@ -25,8 +25,6 @@
 #include "board_features.h"
 #include "em_cmu.h"
 
-
-#warning "WARNING: Custom boards contain no init code in initBoard. Please make sure you have created the init code needed for your board."
 void initBoard(void)
 {
   // Enable clock for USART0
