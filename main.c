@@ -104,6 +104,9 @@ static gecko_configuration_t config = {
 /**
  * @brief  Main function
  */
+
+#include "capsense.h"
+#include "em_gpio.h"
 int main(void)
 {
   /* Initialize device */
@@ -114,7 +117,42 @@ int main(void)
   initApp();
   initVcomEnable();
   /* Start application */
-  appMain(&config);
+  //appMain(&config);
+  int i;
+//  printf("Hello World\r\n");
+//  printLog("Hello World\n");
+  int on = 0;
+  int j = 0;
+  int dec;
+  int inc;
+  while(1)
+  {
+	  for(i=0; i<1000; i++){
+		  if(j>10) j--;
+		  else j++;
+	  }
+
+	  CAPSENSE_Sense();
+	  dec = CAPSENSE_getPressed(0);	// VOL_DEC
+	  inc = CAPSENSE_getPressed(1);	//VOL_INC
+	  if(dec)
+	  {
+	  	GPIO_PinOutSet(gpioPortD, 14);
+	  	//gecko_external_signal(VOL_INC);
+	  }
+	  else{
+		  GPIO_PinOutClear(gpioPortD, 14);
+	  }
+
+	  if(inc)
+	  {
+		  GPIO_PinOutSet(gpioPortD, 15);
+		//gecko_external_signal(VOL_DEC);
+	  }
+	  else{
+		  GPIO_PinOutClear(gpioPortD, 15);
+	  }
+  }
 }
 
 /** @} (end addtogroup app) */
