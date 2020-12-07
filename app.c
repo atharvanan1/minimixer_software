@@ -26,6 +26,7 @@
 
 #include "midi.h"
 #include "app.h"
+#include "events.h"
 
 /* Print boot message */
 static void bootMessage(struct gecko_msg_system_boot_evt_t *bootevt);
@@ -134,6 +135,20 @@ void appMain(gecko_configuration_t *pconfig)
     	      printLog("Velocity - %d\r\n", evt->data.evt_gatt_server_attribute_value.value.data[4]);
     	      gecko_cmd_gatt_server_send_user_write_response(evt->data.evt_gatt_server_user_write_request.connection, gattdb_xgatt_midi, bg_err_success);
     	  }
+    	  break;
+
+     // Capacitive Sensing Event
+      case gecko_evt_system_external_signal_id:
+    	  switch(evt->data.evt_system_external_signal.extsignals) {
+    	  	  case VOL_INC:
+
+    	  		  break;
+    	  	  case VOL_DEC:
+    	  		  break;
+    	  	  default:
+    	  		  break;
+    	  }
+
     	  break;
 
       default:
