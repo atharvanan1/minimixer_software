@@ -15,14 +15,18 @@
 
 
 
-#define ACMP_CHANNELS 2
+//#define ACMP_CHANNELS 2
+////								PA1, pin 26, Vol_Dec	PA2, pin 27, Vol_Inc
+//#define CAPSENSE_CHANNELS		{ acmpInputAPORT3YCH9,	acmpInputAPORT3XCH10 }
+
+
+#define ACMP_CHANNELS 1
+//								PA2, pin 27, Vol_Inc
+#define CAPSENSE_CHANNELS		{acmpInputAPORT3XCH10}
+
+
 
 #define ACMP_CAPSENSE ACMP1
-// This needs to be filled in by the ports on our cap sensors
-//#define CAPSENSE_CHANNELS       { acmpInputAPORT1XCH0, acmpInputAPORT2XCH1, acmpInputAPORT1XCH2, acmpInputAPORT2XCH3 }
-
-//								PA1, pin 26, Vol_Inc	PA2, pin 27, Vol_Dec
-#define CAPSENSE_CHANNELS		{ acmpInputAPORT3YCH9, acmpInputAPORT3XCH10}
 
 
 #define ACMP_CAPSENSE_CMUCLOCK                  cmuClock_ACMP1
@@ -30,12 +34,19 @@
 #define PRS_CH_CTRL_SIGSEL_ACMPOUT_CAPSENSE     PRS_CH_CTRL_SIGSEL_ACMP1OUT
 
 
+typedef enum {
+	READY,
+	MEASURE,
+	COMPLETE
+} capsense_states_t;
+
+
 void CAPSENSE_Init(void);
 uint32_t CAPSENSE_getVal(uint8_t channel);
 uint32_t CAPSENSE_getNormalizedVal(uint8_t channel);
 bool CAPSENSE_getPressed(uint8_t channel);
-//static void CAPSENSE_Measure(ACMP_Channel_TypeDef channel);
-void CAPSENSE_Sense(void);
+void CAPSENSE_Start_Measurement(ACMP_Channel_TypeDef channel);
+//void CAPSENSE_Sense(void);
 
 
 #endif

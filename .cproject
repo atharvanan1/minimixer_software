@@ -73,6 +73,7 @@
 									<listOptionValue builtIn="false" value="__HEAP_SIZE=0xD00"/>
 									<listOptionValue builtIn="false" value="__StackLimit=0x20000000"/>
 									<listOptionValue builtIn="false" value="EFR32BG13P732F512GM48=1"/>
+									<listOptionValue builtIn="false" value="RETARGET_VCOM=1"/>
 								</option>
 								<option id="com.silabs.ide.si32.gcc.cdt.managedbuild.tool.gnu.c.compiler.optimization.level.1813219665" name="Optimization Level" superClass="com.silabs.ide.si32.gcc.cdt.managedbuild.tool.gnu.c.compiler.optimization.level" value="gnu.c.optimization.level.none" valueType="enumerated"/>
 								<inputType id="com.silabs.ide.si32.gcc.cdt.managedbuild.tool.gnu.c.compiler.input.1014542686" superClass="com.silabs.ide.si32.gcc.cdt.managedbuild.tool.gnu.c.compiler.input"/>
@@ -194,6 +195,7 @@
 								<listOptionValue builtIn="false" value="__HEAP_SIZE=0xD00"/>
 								<listOptionValue builtIn="false" value="__StackLimit=0x20000000"/>
 								<listOptionValue builtIn="false" value="EFR32BG13P732F512GM48=1"/>
+								<listOptionValue builtIn="false" value="RETARGET_VCOM=1"/>
 							</option>
 							<inputType id="com.silabs.ide.si32.gcc.cdt.managedbuild.tool.gnu.c.compiler.input.355906755" superClass="com.silabs.ide.si32.gcc.cdt.managedbuild.tool.gnu.c.compiler.input"/>
 						</tool>
@@ -240,6 +242,7 @@
 								<listOptionValue builtIn="false" value="__HEAP_SIZE=0xD00"/>
 								<listOptionValue builtIn="false" value="__StackLimit=0x20000000"/>
 								<listOptionValue builtIn="false" value="EFR32BG13P732F512GM48=1"/>
+								<listOptionValue builtIn="false" value="RETARGET_VCOM=1"/>
 							</option>
 							<inputType id="com.silabs.ide.si32.gcc.cdt.managedbuild.tool.gnu.c.compiler.input.447251327" superClass="com.silabs.ide.si32.gcc.cdt.managedbuild.tool.gnu.c.compiler.input"/>
 						</tool>
@@ -286,6 +289,7 @@
 								<listOptionValue builtIn="false" value="__HEAP_SIZE=0xD00"/>
 								<listOptionValue builtIn="false" value="__StackLimit=0x20000000"/>
 								<listOptionValue builtIn="false" value="EFR32BG13P732F512GM48=1"/>
+								<listOptionValue builtIn="false" value="RETARGET_VCOM=1"/>
 							</option>
 							<inputType id="com.silabs.ide.si32.gcc.cdt.managedbuild.tool.gnu.c.compiler.input.588377414" superClass="com.silabs.ide.si32.gcc.cdt.managedbuild.tool.gnu.c.compiler.input"/>
 						</tool>
@@ -332,6 +336,7 @@
 								<listOptionValue builtIn="false" value="__HEAP_SIZE=0xD00"/>
 								<listOptionValue builtIn="false" value="__StackLimit=0x20000000"/>
 								<listOptionValue builtIn="false" value="EFR32BG13P732F512GM48=1"/>
+								<listOptionValue builtIn="false" value="RETARGET_VCOM=1"/>
 							</option>
 							<inputType id="com.silabs.ide.si32.gcc.cdt.managedbuild.tool.gnu.c.compiler.input.1632244055" superClass="com.silabs.ide.si32.gcc.cdt.managedbuild.tool.gnu.c.compiler.input"/>
 						</tool>
@@ -378,6 +383,7 @@
 								<listOptionValue builtIn="false" value="__HEAP_SIZE=0xD00"/>
 								<listOptionValue builtIn="false" value="__StackLimit=0x20000000"/>
 								<listOptionValue builtIn="false" value="EFR32BG13P732F512GM48=1"/>
+								<listOptionValue builtIn="false" value="RETARGET_VCOM=1"/>
 							</option>
 							<inputType id="com.silabs.ide.si32.gcc.cdt.managedbuild.tool.gnu.c.compiler.input.783434087" superClass="com.silabs.ide.si32.gcc.cdt.managedbuild.tool.gnu.c.compiler.input"/>
 						</tool>
@@ -424,6 +430,7 @@
 								<listOptionValue builtIn="false" value="__HEAP_SIZE=0xD00"/>
 								<listOptionValue builtIn="false" value="__StackLimit=0x20000000"/>
 								<listOptionValue builtIn="false" value="EFR32BG13P732F512GM48=1"/>
+								<listOptionValue builtIn="false" value="RETARGET_VCOM=1"/>
 							</option>
 							<inputType id="com.silabs.ide.si32.gcc.cdt.managedbuild.tool.gnu.c.compiler.input.1477497194" superClass="com.silabs.ide.si32.gcc.cdt.managedbuild.tool.gnu.c.compiler.input"/>
 						</tool>
@@ -444,5 +451,9 @@
 			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
 		</scannerConfigBuildInfo>
 	</storageModule>
-	<storageModule moduleId="refreshScope"/>
+	<storageModule moduleId="refreshScope" versionNumber="2">
+		<configuration configurationName="GNU ARM v7.2.1 - Default">
+			<resource resourceType="PROJECT" workspacePath="/minimixer_software"/>
+		</configuration>
+	</storageModule>
 </cproject>

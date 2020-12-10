@@ -25,6 +25,9 @@
 #include "board_features.h"
 #include "em_cmu.h"
 #include "capsense.h"
+#include "letimer.h"
+
+#include "retargetserial.h"
 
 void initBoard(void)
 {
@@ -39,10 +42,17 @@ void initBoard(void)
    GPIO_PinOutSet(gpioPortC, 8);
 
 
+
+
    CAPSENSE_Init();
+   LETIMERinit();
 }
 
 
 void initVcomEnable(void)
 {
+
+	void RETARGET_SerialInit(void);
+
+
 }
