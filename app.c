@@ -157,14 +157,14 @@ void appMain(gecko_configuration_t *pconfig)
 
     	  			  printLog("Cap Measurement Finished");
 
-//					  if(CAPSENSE_getPressed(0)){
-//						GPIO_PinOutSet(gpioPortD, 14);
-//					  }
-//					  else{
-//						GPIO_PinOutClear(gpioPortD, 14);
-//					  }
-
 					  if(CAPSENSE_getPressed(0)){
+						GPIO_PinOutSet(gpioPortD, 14);
+					  }
+					  else{
+						GPIO_PinOutClear(gpioPortD, 14);
+					  }
+
+					  if(CAPSENSE_getPressed(1)){
 						GPIO_PinOutSet(gpioPortD, 15);
 					  }
 					  else{

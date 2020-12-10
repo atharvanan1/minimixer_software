@@ -57,7 +57,6 @@ static const ACMP_Channel_TypeDef channelList[ACMP_CHANNELS] = CAPSENSE_CHANNELS
 
 
 
-static capsense_states_t CAPSENSE_state = READY;
 
 /**************************************************************************//**
  * @brief
@@ -111,6 +110,12 @@ void CAPSENSE_Init(void)
   /* Set up ACMP1 in capsense mode */
   capsenseInit.enable = false;
   capsenseInit.resistor = acmpResistor7;
+  capsenseInit.hysteresisLevel_0 = acmpHysteresisLevel9;
+  capsenseInit.hysteresisLevel_1 = acmpHysteresisLevel9;
+
+  capsenseInit.vddLevelHigh = 0x3A;
+  capsenseInit.vddLevelLow = 0x25;
+
   ACMP_CapsenseInit(ACMP_CAPSENSE, &capsenseInit);
 
   ACMP1->IEN = ACMP_IEN_WARMUP;
@@ -284,7 +289,7 @@ void TIMER0_IRQHandler(void)
 
   /* Update channelMaxValues */
   if (count > channelMaxValues[currentChannel]) {
-
+	  //channelMaxValues[currentChannel] = count;
 	  if(count >50) channelMaxValues[currentChannel] = 50;
 
 	  else channelMaxValues[currentChannel] = count;

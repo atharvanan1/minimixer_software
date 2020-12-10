@@ -15,14 +15,14 @@
 
 
 
-//#define ACMP_CHANNELS 2
-////								PA1, pin 26, Vol_Dec	PA2, pin 27, Vol_Inc
-//#define CAPSENSE_CHANNELS		{ acmpInputAPORT3YCH9,	acmpInputAPORT3XCH10 }
+#define ACMP_CHANNELS 2
+//								PA1, pin 26, Vol_Dec	PA2, pin 27, Vol_Inc
+#define CAPSENSE_CHANNELS		{ acmpInputAPORT3YCH9,	acmpInputAPORT3XCH10 }
 
 
-#define ACMP_CHANNELS 1
-//								PA2, pin 27, Vol_Inc
-#define CAPSENSE_CHANNELS		{acmpInputAPORT3XCH10}
+//#define ACMP_CHANNELS 1
+////								PA2, pin 27, Vol_Inc
+//#define CAPSENSE_CHANNELS		{acmpInputAPORT3XCH10}
 
 
 
