@@ -63,12 +63,12 @@
 #define BSP_SERIAL_APP_CTS_PORT                       (gpioPortA)
 #define BSP_SERIAL_APP_CTS_LOC                        (30U)
 
-#define BSP_SERIAL_APP_RX_PIN                         (1U)
-#define BSP_SERIAL_APP_RX_PORT                        (gpioPortA)
+#define BSP_SERIAL_APP_RX_PIN                         (4U)
+#define BSP_SERIAL_APP_RX_PORT                        (gpioPortF)
 #define BSP_SERIAL_APP_RX_LOC                         (0U)
 
-#define BSP_SERIAL_APP_TX_PIN                         (0U)
-#define BSP_SERIAL_APP_TX_PORT                        (gpioPortA)
+#define BSP_SERIAL_APP_TX_PIN                         (5U)
+#define BSP_SERIAL_APP_TX_PORT                        (gpioPortF)
 #define BSP_SERIAL_APP_TX_LOC                         (0U)
 
 #define BSP_SERIAL_APP_RTS_PIN                        (3U)

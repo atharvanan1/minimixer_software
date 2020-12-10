@@ -1,7 +1,18 @@
 
+
+/*****************************
+ * File: capsense.c
+ * Description: This file contains the capsense library
+ * 				given in the touch demo
+ *
+ * 		This file is functional, but requires a polling implementation
+ *****************************/
+
+
+
+
 #include <stdint.h>
 #include <stdbool.h>
-#include <stdio.h>
 
 
 #include "em_acmp.h"
@@ -20,6 +31,7 @@
 
 #include "capsense.h"
 #include "events.h"
+#include "native_gecko.h"
 
 
 /** The current channel we are sensing. */
@@ -42,6 +54,10 @@ static volatile uint32_t channelMaxValues[ACMP_CHANNELS] = { 0 };
 
 
 static const ACMP_Channel_TypeDef channelList[ACMP_CHANNELS] = CAPSENSE_CHANNELS;
+
+
+
+static capsense_states_t CAPSENSE_state = READY;
 
 /**************************************************************************//**
  * @brief
@@ -72,7 +88,7 @@ void CAPSENSE_Init(void)
 
   /* Initialize TIMER0 - Prescaler 2^9, top value 10, interrupt on overflow */
   TIMER0->CTRL = TIMER_CTRL_PRESC_DIV512;
-  TIMER0->TOP  = 10;
+  TIMER0->TOP  = 10;		// was 10 og
   TIMER0->IEN  = TIMER_IEN_OF;
   TIMER0->CNT  = 0;
 
@@ -93,7 +109,11 @@ void CAPSENSE_Init(void)
 					| PRS_CH_CTRL_SIGSEL_ACMPOUT_CAPSENSE;     /* PRS source */
 
   /* Set up ACMP1 in capsense mode */
+  capsenseInit.enable = false;
+  capsenseInit.resistor = acmpResistor7;
   ACMP_CapsenseInit(ACMP_CAPSENSE, &capsenseInit);
+
+  ACMP1->IEN = ACMP_IEN_WARMUP;
 
   /* Enable TIMER0 interrupt */
   NVIC_EnableIRQ(TIMER0_IRQn);
@@ -134,8 +154,12 @@ bool CAPSENSE_getPressed(uint8_t channel)
   /* Treshold is set to 50% below the maximum value */
   /* This calculation is performed in two steps because channelMaxValues is
    * volatile. */
+//  uint32_t ch0_norm = CAPSENSE_getNormalizedVal(0);
+//  uint32_t ch1_norm = CAPSENSE_getNormalizedVal(1);
+
+
   treshold  = channelMaxValues[channel];
-  treshold -= channelMaxValues[channel] >> 2;
+  treshold -= channelMaxValues[channel] >> 1;
 
   if (channelValues[channel] < treshold) {
     return true;
@@ -149,54 +173,86 @@ bool CAPSENSE_getPressed(uint8_t channel)
  *   Start a capsense measurement of a specific channel and waits for
  *   it to complete.
  *****************************************************************************/
-static void CAPSENSE_Measure(ACMP_Channel_TypeDef channel)
+void CAPSENSE_Start_Measurement(uint8_t channel)
 {
+  currentChannel = channel;
+
+
+  ACMP_Enable(ACMP_CAPSENSE);
   /* Set up this channel in the ACMP. */
-  ACMP_CapsenseChannelSet(ACMP_CAPSENSE, channel);
+  ACMP_CapsenseChannelSet(ACMP_CAPSENSE, channelList[channel]);
 
   /* Reset timers */
   TIMER0->CNT = 0;
   TIMER1->CNT = 0;
 
-  measurementComplete = false;
-
   /* Start timers */
+  measurementComplete = false;
   TIMER0->CMD = TIMER_CMD_START;
   TIMER1->CMD = TIMER_CMD_START;
 
-  /* Wait for measurement to complete */
-  while ( measurementComplete == false ) {
-    EMU_EnterEM1();
-  }
 }
 
 
-void CAPSENSE_Sense(void)
-{
-  /* Use the default STK capacative sensing setup and enable it */
-  ACMP_Enable(ACMP_CAPSENSE);
+//void CAPSENSE_Sense(void)
+//{
+//  /* Use the default STK capacative sensing setup and enable it */
+//  ACMP_Enable(ACMP_CAPSENSE);
+//
+//#if defined(CAPSENSE_CHANNELS)
+//  for (currentChannel = 0; currentChannel < ACMP_CHANNELS; currentChannel++) {
+////  currentChannel = currentChannel % ACMP_CHANNELS;
+//	  CAPSENSE_Measure_Channel(channelList[currentChannel]);
+//  }
+//
+//#else
+//  /* Iterate through all channels and check which channel is in use */
+//  for (currentChannel = 0; currentChannel < ACMP_CHANNELS; currentChannel++) {
+//    /* If this channel is not in use, skip to the next one */
+//    if (!channelsInUse[currentChannel]) {
+//      continue;
+//    }
+//
+//    CAPSENSE_Measure((ACMP_Channel_TypeDef) currentChannel);
+//  }
+//#endif
+//
+//}
 
-#if defined(CAPSENSE_CHANNELS)
-  /* Iterate through only the channels in the channelList */
-  for (currentChannel = 0; currentChannel < ACMP_CHANNELS; currentChannel++) {
-    CAPSENSE_Measure(channelList[currentChannel]);
-  }
-#else
-  /* Iterate through all channels and check which channel is in use */
-  for (currentChannel = 0; currentChannel < ACMP_CHANNELS; currentChannel++) {
-    /* If this channel is not in use, skip to the next one */
-    if (!channelsInUse[currentChannel]) {
-      continue;
-    }
 
-    CAPSENSE_Measure((ACMP_Channel_TypeDef) currentChannel);
-  }
-#endif
 
-  /* Disable ACMP while not sensing to reduce power consumption */
-  ACMP_Disable(ACMP_CAPSENSE);
-}
-
+//void Capsense_Routine(uint32_t event){
+//
+//	CAPSENSE_state = READY;
+//
+//	switch(CAPSENSE_state){
+//	case READY:
+//		currentChannel = 0;
+//		ACMP_Enable(ACMP_CAPSENSE);
+//		break;
+//	case MEASURE:
+//		ACMP_Enable(ACMP_CAPSENSE);
+//	    CAPSENSE_Measure_Channel(channelList[currentChannel]);
+//	    currentChannel++;
+//	    if(currentChannel == (ACMP_CHANNELS - 1)){
+//	    	CAPSENSE_state = COMPLETE;
+//	    }
+//	    else{
+//	    	CAPSENSE_state = MEASURE;
+//	    }
+//		break;
+//
+//	case COMPLETE:
+//
+//		  /* Disable ACMP while not sensing to reduce power consumption */
+//		  ACMP_Disable(ACMP_CAPSENSE);
+//		  CAPSENSE_state = READY;
+//
+//		break;
+//	}
+//
+//
+//}
 
 
 /**************************************************************************//**
@@ -228,9 +284,24 @@ void TIMER0_IRQHandler(void)
 
   /* Update channelMaxValues */
   if (count > channelMaxValues[currentChannel]) {
-    channelMaxValues[currentChannel] = count;
+
+	  if(count >50) channelMaxValues[currentChannel] = 50;
+
+	  else channelMaxValues[currentChannel] = count;
 
   }
 
-  measurementComplete = true;
+  //measurementComplete = true;
+  gecko_external_signal(CAP_MEASURE_END);
+
+
+}
+
+
+void ACMP1_IRQHandler(void){
+	uint32_t int_flag = ACMP1->IF & ACMP1->IEN;
+	ACMP1->IFC = int_flag;
+	gecko_external_signal(CAP_MEASURE_READY);
+
+
 }
