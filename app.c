@@ -23,9 +23,16 @@
 #include "bg_types.h"
 #include "native_gecko.h"
 #include "gatt_db.h"
-
 #include "midi.h"
 #include "app.h"
+
+#include "Encoder.h"
+#include "MIDI_API.h"
+#include "Commands.h"
+#include "events.h"
+#include <assert.h>
+#include "Blinky_LEDs.h"
+
 
 /* Print boot message */
 static void bootMessage(struct gecko_msg_system_boot_evt_t *bootevt);
@@ -45,6 +52,14 @@ void appMain(gecko_configuration_t *pconfig)
 
   /* Initialize stack */
   gecko_init(pconfig);
+
+  /* Encoder Variable*/
+  uint32_t Instrument = 0;
+  uint32_t Reverb = 0;
+  uint32_t MIDINoteDelay = 0;
+
+  /*BT for test sound -> No sound :( */
+  BTVal_t test = {1,60,127};
 
   while (1) {
     /* Event pointer for handling events */
@@ -129,13 +144,61 @@ void appMain(gecko_configuration_t *pconfig)
     	  printLog("Note play\r\n");
     	  if (evt->data.evt_gatt_server_user_write_request.characteristic == gattdb_xgatt_midi) {
     	      // Write user supplied value to LEDs.
+    		  BTVal_t BTV = { evt->data.evt_gatt_server_attribute_value.value.data[2],
+    				  	  	  evt->data.evt_gatt_server_attribute_value.value.data[3],
+							  evt->data.evt_gatt_server_attribute_value.value.data[4]};
+    		  MIDI_NoteOnOff (BTV, 0);
     	      printLog("Command - %02x; ", evt->data.evt_gatt_server_attribute_value.value.data[2]);
     	      printLog("Note - %d; ", evt->data.evt_gatt_server_attribute_value.value.data[3]);
     	      printLog("Velocity - %d\r\n", evt->data.evt_gatt_server_attribute_value.value.data[4]);
     	      gecko_cmd_gatt_server_send_user_write_response(evt->data.evt_gatt_server_user_write_request.connection, gattdb_xgatt_midi, bg_err_success);
     	  }
     	  break;
+      case gecko_evt_system_external_signal_id:
 
+    	  switch(evt->data.evt_system_external_signal.extsignals){
+    	  case ENC_1:
+    		  if (!INRANGE(Instrument, MAX_INTS_VAL))
+    		  		return;
+    		  	int SmePhs1 = isSamePhase(1);
+    		  	assert(SmePhs1 != -1);
+    		  	if ((SmePhs1 == YES) && LESSER(Instrument, MAX_INTS_VAL))
+    		  		Instrument++;
+    		  	else if ((SmePhs1 == 0) && GREATER(Instrument, 0))
+    		  		Instrument--;
+    		  	MIDI_SetInstrument ( Instrument,  0);
+
+    		  	/*Test fo fun -> not sound : <*/
+    	    	MIDI_NoteOnOff (test, 0);
+    	    	for(int i = 0; i<MIDINoteDelay;i++)
+    	    		;
+    		  break;
+    	  case ENC_2:
+    		  if (!INRANGE(Reverb, MIDE_REVERB_MAX_VAL))
+    		  		return;
+    		  	int SmePhs2 = isSamePhase(2);
+    		  	assert(SmePhs2 != -1);
+    		  	if ((SmePhs2 == YES) && LESSER(Reverb, MIDE_REVERB_MAX_VAL))
+    		  		Reverb++;
+    		  	else if (GREATER(Reverb, 0))
+    		  		Reverb--;
+    		  	MIDI_Reverb (Reverb, 0);
+    	    	MIDI_NoteOnOff (test, 0);
+
+    		  break;
+    	  case ENC_3:
+    		  if (!INRANGE(MIDINoteDelay, MAX_NOTE_DELAY))
+    		  		return;
+    		  	int SmePhs3 = isSamePhase(3);
+    		  	assert(SmePhs3 != -1);
+    		  	if ((SmePhs3 == YES) && LESSER(MIDINoteDelay, MAX_NOTE_DELAY))
+    		  		MIDINoteDelay += DELAY_INTERVAL;
+    		  	else if (GREATER(MIDINoteDelay, DELAY_INTERVAL))
+    		  		MIDINoteDelay -= DELAY_INTERVAL;
+    		  break;
+
+    	  }
+    	  break;
       default:
         break;
     }

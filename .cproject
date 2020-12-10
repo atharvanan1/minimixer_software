@@ -74,6 +74,7 @@
 									<listOptionValue builtIn="false" value="__StackLimit=0x20000000"/>
 									<listOptionValue builtIn="false" value="EFR32BG13P732F512GM48=1"/>
 								</option>
+								<option id="com.silabs.ide.si32.gcc.cdt.managedbuild.tool.gnu.c.compiler.optimization.level.778415162" name="Optimization Level" superClass="com.silabs.ide.si32.gcc.cdt.managedbuild.tool.gnu.c.compiler.optimization.level" value="gnu.c.optimization.level.none" valueType="enumerated"/>
 								<inputType id="com.silabs.ide.si32.gcc.cdt.managedbuild.tool.gnu.c.compiler.input.1014542686" superClass="com.silabs.ide.si32.gcc.cdt.managedbuild.tool.gnu.c.compiler.input"/>
 							</tool>
 							<tool id="com.silabs.ide.si32.gcc.cdt.managedbuild.tool.gnu.cpp.compiler.base.936783455" name="GNU ARM C++ Compiler" superClass="com.silabs.ide.si32.gcc.cdt.managedbuild.tool.gnu.cpp.compiler.base"/>
@@ -443,5 +444,9 @@
 			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
 		</scannerConfigBuildInfo>
 	</storageModule>
-	<storageModule moduleId="refreshScope"/>
+	<storageModule moduleId="refreshScope" versionNumber="2">
+		<configuration configurationName="GNU ARM v7.2.1 - Default">
+			<resource resourceType="PROJECT" workspacePath="/minimixer_software"/>
+		</configuration>
+	</storageModule>
 </cproject>
