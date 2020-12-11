@@ -26,12 +26,17 @@
 
 #include "midi.h"
 #include "app.h"
+#include "events.h"
+#include "capsense.h"
+#include "letimer.h"
 
 /* Print boot message */
 static void bootMessage(struct gecko_msg_system_boot_evt_t *bootevt);
 
 /* Flag for indicating DFU Reset must be performed */
 static uint8_t boot_to_dfu = 0;
+
+static uint8_t capsense_channel = 0;
 
 /* Main application */
 void appMain(gecko_configuration_t *pconfig)
@@ -67,6 +72,7 @@ void appMain(gecko_configuration_t *pconfig)
       case gecko_evt_system_boot_id:
 
     	midi_init_ble_connection();
+    	LETIMERstart();
         bootMessage(&(evt->data.evt_system_boot));
         printLog("boot event - starting advertising\r\n");
 
@@ -134,6 +140,54 @@ void appMain(gecko_configuration_t *pconfig)
     	      printLog("Velocity - %d\r\n", evt->data.evt_gatt_server_attribute_value.value.data[4]);
     	      gecko_cmd_gatt_server_send_user_write_response(evt->data.evt_gatt_server_user_write_request.connection, gattdb_xgatt_midi, bg_err_success);
     	  }
+    	  break;
+
+     // Capacitive Sensing Event
+      case gecko_evt_system_external_signal_id:
+    	  switch(evt->data.evt_system_external_signal.extsignals) {
+    	  	  case CAP_MEASURE_START:
+    	  		  capsense_channel = 0;
+    	  		  CAPSENSE_Start_Measurement(capsense_channel);
+    	  		  break;
+
+    	  	  case CAP_MEASURE_END:
+    	  		  capsense_channel++;
+
+    	  		  if(capsense_channel == ACMP_CHANNELS){
+
+    	  			  printLog("Cap Measurement Finished");
+
+					  if(CAPSENSE_getPressed(0)){
+						GPIO_PinOutSet(gpioPortD, 14);
+					  }
+					  else{
+						GPIO_PinOutClear(gpioPortD, 14);
+					  }
+
+					  if(CAPSENSE_getPressed(1)){
+						GPIO_PinOutSet(gpioPortD, 15);
+					  }
+					  else{
+						GPIO_PinOutClear(gpioPortD, 15);
+					  }
+					  LETIMERstart();
+    	  		  }
+
+    	  		  else{
+    	  			  CAPSENSE_Start_Measurement(capsense_channel);
+    	  		  }
+
+    	  		  break;
+
+    	  	  case ENC_0:
+
+    	  		  break;
+
+    	  	  default:
+    	  		  printLog("UnknownExternalSignal");
+    	  		  break;
+    	  }
+
     	  break;
 
       default:

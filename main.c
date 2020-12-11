@@ -104,6 +104,14 @@ static gecko_configuration_t config = {
 /**
  * @brief  Main function
  */
+
+#include "capsense.h"
+#include "em_gpio.h"
+//#include <stdint.h>
+//#include <stdio.h>
+//#include "retargetserial.h"
+//#include "letimer.h"
+
 int main(void)
 {
   /* Initialize device */
@@ -115,6 +123,7 @@ int main(void)
   initVcomEnable();
   /* Start application */
   appMain(&config);
+
 }
 
 /** @} (end addtogroup app) */
