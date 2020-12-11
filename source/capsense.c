@@ -113,7 +113,7 @@ void CAPSENSE_Init(void)
   capsenseInit.hysteresisLevel_0 = acmpHysteresisLevel9;
   capsenseInit.hysteresisLevel_1 = acmpHysteresisLevel9;
 
-  capsenseInit.vddLevelHigh = 0x3A;
+  capsenseInit.vddLevelHigh = 0x3F;
   capsenseInit.vddLevelLow = 0x25;
 
   ACMP_CapsenseInit(ACMP_CAPSENSE, &capsenseInit);

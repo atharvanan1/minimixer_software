@@ -53,6 +53,7 @@
 #include "usart.h"
 #include "Blinky_LEDs.h"
 #include "Encoder.h"
+#include "System_Init.h"
 
 /***********************************************************************************************//**
  * @addtogroup Application
@@ -130,8 +131,11 @@ int main(void)
 
   ResetCodec();
   initUSART0_MINI();
+  PBstatus();
+  AOstatus();
   EncoderInit();
   setGpioCallback();
+
 
   initVcomEnable();
 

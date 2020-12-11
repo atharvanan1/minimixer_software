@@ -93,8 +93,8 @@ void MIDI_Reverb (uint8_t Enco_Reverb, uint8_t chan)
 
 void MIDI_PitchBend (uint16_t BendVal, uint8_t chan)
 {
-  if (BendVal > 0x3FF || chan > 15)
+  if (chan > 15)
     return;
-  MIDI_Command (MIDI_PITCH_WHEEL | chan, BendVal >> 8, LOW_BEND_MASK & BendVal);
+  MIDI_Command (MIDI_PITCH_WHEEL | chan, (BendVal>>8)&0x3, LOW_BEND_MASK & BendVal);
 }
 

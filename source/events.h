@@ -19,7 +19,9 @@ typedef enum{
 	CAP_MEASURE_END = 0x0000004,
 	ENC_1 = 0x00000008,
 	ENC_2 = 0x00000010,
-	ENC_3 = 0x00000011
+	ENC_3 = 0x00000011,
+	PBSTAT = 0x00000012,
+
 } event_t;
 
 

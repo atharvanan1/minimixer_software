@@ -13,6 +13,7 @@
 #include <assert.h>
 #include "events.h"
 #include "native_gecko.h"
+#include "System_Init.h"
 
 
 /* Purpose: set up Encoder GPIO and interrupt
@@ -27,8 +28,8 @@ void EncoderInit() {
 			true, true);
 
 	GPIO_PinModeSet(ENCODER1_B_PORT, ENCODER1_B_PIN, gpioModeInput, false);
-	GPIO_ExtIntConfig(ENCODER1_B_PORT, ENCODER1_B_PIN, ENCODER1_B_PIN, false,
-			true, true);
+//	GPIO_ExtIntConfig(ENCODER1_B_PORT, ENCODER1_B_PIN, ENCODER1_B_PIN, false,
+//			true, true);
 
 	/*Middle Encoder*/
 	GPIO_PinModeSet(ENCODER2_A_PORT, ENCODER2_A_PIN, gpioModeInput, false);
@@ -36,8 +37,8 @@ void EncoderInit() {
 			true, true);
 
 	GPIO_PinModeSet(ENCODER2_B_PORT, ENCODER2_B_PIN, gpioModeInput, false);
-	GPIO_ExtIntConfig(ENCODER2_B_PORT, ENCODER2_B_PIN, ENCODER2_B_PIN, false,
-			true, true);
+//	GPIO_ExtIntConfig(ENCODER2_B_PORT, ENCODER2_B_PIN, ENCODER2_B_PIN, false,
+//			true, true);
 
 	/*Right Encoder*/
 	GPIO_PinModeSet(ENCODER3_A_PORT, ENCODER3_A_PIN, gpioModeInput, false);
@@ -45,8 +46,8 @@ void EncoderInit() {
 			true, true);
 
 	GPIO_PinModeSet(ENCODER3_B_PORT, ENCODER3_B_PIN, gpioModeInput, false);
-	GPIO_ExtIntConfig(ENCODER3_B_PORT, ENCODER3_B_PIN, ENCODER3_B_PIN, false,
-			true, true);
+//	GPIO_ExtIntConfig(ENCODER3_B_PORT, ENCODER3_B_PIN, ENCODER3_B_PIN, false,
+//			true, true);
 
 	/*GPIO Encoder Interrupt*/
 	NVIC_ClearPendingIRQ(GPIO_EVEN_IRQn);
@@ -96,4 +97,9 @@ void setGpioCallback(void) {
 	GPIOINT_CallbackRegister(ENCODER1_A_PIN, Encoder1_Evt);
 	GPIOINT_CallbackRegister(ENCODER2_A_PIN, Encoder2_Evt);
 	GPIOINT_CallbackRegister(ENCODER3_A_PIN, Encoder3_Evt);
+	GPIOINT_CallbackRegister(PBSTAT_PIN, PB_Evt);
+	//GPIOINT_CallbackRegister(AO_PIN+1, Battery_status);
+
+
+
 }

@@ -40,8 +40,8 @@ void initBoard(void)
    GPIO_PinOutSet(gpioPortC, 10);
    //PC8 ---> POWERON
    GPIO_PinOutSet(gpioPortC, 8);
-
-
+   //Green LED On indicate system powered
+   GPIO_PinOutSet(gpioPortD, 14);
 
 
    CAPSENSE_Init();

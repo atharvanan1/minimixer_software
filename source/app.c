@@ -67,9 +67,8 @@ void appMain(gecko_configuration_t *pconfig)
   uint32_t Instrument = 0;
   uint32_t Reverb = 0;
   uint32_t MIDINoteDelay = 0;
-
-  /*BT for test sound -> No sound :( */
-  BTVal_t test = {1,60,127};
+  uint32_t BendVal = 0;
+  uint32_t CapSense_Vol = 127;
 
   while (1) {
     /* Event pointer for handling events */
@@ -109,14 +108,13 @@ void appMain(gecko_configuration_t *pconfig)
 
       case gecko_evt_le_connection_opened_id:
 
-//        printLog("connection opened\r\n");
         midi_ble_connected(evt->data.evt_le_connection_opened.connection);
+        GPIO_PinOutSet(gpioPortD, 15);
         break;
 
       case gecko_evt_le_connection_closed_id:
-
-//        printLog("connection closed, reason: 0x%2.2x\r\n", evt->data.evt_le_connection_closed.reason);
         midi_ble_disconnected();
+
 
         /* Check if need to boot to OTA DFU mode */
         if (boot_to_dfu) {
@@ -126,6 +124,7 @@ void appMain(gecko_configuration_t *pconfig)
           /* Restart advertising after client has disconnected */
           gecko_cmd_le_gap_start_advertising(0, le_gap_general_discoverable, le_gap_connectable_scannable);
         }
+        GPIO_PinOutClear(gpioPortD, 15);
         break;
 
       /* Events related to OTA upgrading
@@ -156,7 +155,7 @@ void appMain(gecko_configuration_t *pconfig)
 		  CORE_ENTER_CRITICAL();
 		  SLEEP_SleepBlockBegin(sleepEM0);
 		  CORE_EXIT_CRITICAL();
-    	  GPIO_PinOutSet(gpioPortD, 14);
+    	  __disable_irq();
     	  if (evt->data.evt_gatt_server_user_write_request.characteristic == gattdb_xgatt_midi) {
     	      // Write user supplied value to LEDs.
     		  BTVal_t BTV = { evt->data.evt_gatt_server_attribute_value.value.data[2],
@@ -165,6 +164,7 @@ void appMain(gecko_configuration_t *pconfig)
     		  MIDI_NoteOnOff (BTV, 0);
     	      gecko_cmd_gatt_server_send_user_write_response(evt->data.evt_gatt_server_user_write_request.connection, gattdb_xgatt_midi, bg_err_success);
     	  }
+    	  __enable_irq();
 //    	  CORE_DECLARE_IRQ_STATE;
           CORE_ENTER_CRITICAL();
           SLEEP_SleepBlockEnd(sleepEM0);
@@ -175,7 +175,7 @@ void appMain(gecko_configuration_t *pconfig)
     	  switch(evt->data.evt_system_external_signal.extsignals){
     	  case ENC_1:
     		  if (!INRANGE(Instrument, MAX_INTS_VAL))
-    		  		return;
+    			  break;
     		  	int SmePhs1 = isSamePhase(1);
     		  	assert(SmePhs1 != -1);
     		  	if ((SmePhs1 == YES) && LESSER(Instrument, MAX_INTS_VAL))
@@ -183,35 +183,30 @@ void appMain(gecko_configuration_t *pconfig)
     		  	else if ((SmePhs1 == 0) && GREATER(Instrument, 0))
     		  		Instrument--;
     		  	MIDI_SetInstrument ( Instrument,  0);
-
-    		  	/*Test fo fun -> not sound : <*/
-    	    	MIDI_NoteOnOff (test, 0);
-    	    	for(int i = 0; i<MIDINoteDelay;i++)
-    	    		;
     		  break;
 
     	  case ENC_2:
     		  if (!INRANGE(Reverb, MIDE_REVERB_MAX_VAL))
-    		  		return;
+    		  		break;
     		  	int SmePhs2 = isSamePhase(2);
     		  	assert(SmePhs2 != -1);
     		  	if ((SmePhs2 == YES) && LESSER(Reverb, MIDE_REVERB_MAX_VAL))
-    		  		Reverb++;
-    		  	else if (GREATER(Reverb, 0))
-    		  		Reverb--;
-    		  	MIDI_Reverb (Reverb, 0);
-    	    	MIDI_NoteOnOff (test, 0);
+    		  		Reverb+=16;
+    		  	else if (GREATER(Reverb, 16))
+    		  		Reverb-=16;
+    		  	 MIDI_Reverb (Reverb, 0);
     		  break;
 
     	  case ENC_3:
     		  if (!INRANGE(MIDINoteDelay, MAX_NOTE_DELAY))
-    		  		return;
+    			  break;
     		  	int SmePhs3 = isSamePhase(3);
     		  	assert(SmePhs3 != -1);
-    		  	if ((SmePhs3 == YES) && LESSER(MIDINoteDelay, MAX_NOTE_DELAY))
-    		  		MIDINoteDelay += DELAY_INTERVAL;
-    		  	else if (GREATER(MIDINoteDelay, DELAY_INTERVAL))
-    		  		MIDINoteDelay -= DELAY_INTERVAL;
+    		  	if ((SmePhs3 == YES) && LESSER(MIDINoteDelay, 1016))
+    		  		BendVal += 127;
+    		  	else if (GREATER(MIDINoteDelay, 127))
+    		  		BendVal -= 127;
+    		  	MIDI_PitchBend (BendVal, 0);
     		  break;
 
 		  case CAP_MEASURE_START:
@@ -223,9 +218,6 @@ void appMain(gecko_configuration_t *pconfig)
 			  capsense_channel++;
 
 			  if(capsense_channel == ACMP_CHANNELS){
-
-//				  printLog("Cap Measurement Finished");
-
 				  if(CAPSENSE_getPressed(0)){
 //					GPIO_PinOutSet(gpioPortD, 14);
 				  }
@@ -234,11 +226,11 @@ void appMain(gecko_configuration_t *pconfig)
 				  }
 
 				  if(CAPSENSE_getPressed(1)){
-					GPIO_PinOutSet(gpioPortD, 15);
-					GPIO_PinOutClear(gpioPortD, 14);
+//					GPIO_PinOutSet(gpioPortD, 15);
+//					GPIO_PinOutClear(gpioPortD, 14);
 				  }
 				  else{
-					GPIO_PinOutClear(gpioPortD, 15);
+//					GPIO_PinOutClear(gpioPortD, 15);
 				  }
 				  LETIMERstart();
 			  }
@@ -249,7 +241,6 @@ void appMain(gecko_configuration_t *pconfig)
 			  break;
 
 		  default:
-//			  printLog("UnknownExternalSignal");
 			  break;
     	  }
 
