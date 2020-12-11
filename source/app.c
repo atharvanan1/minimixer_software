@@ -28,6 +28,7 @@
 #include "events.h"
 #include "capsense.h"
 #include "letimer.h"
+#include "em_core.h"
 
 #include "Encoder.h"
 #include "MIDI_API.h"
@@ -35,6 +36,8 @@
 #include "events.h"
 #include <assert.h>
 #include "Blinky_LEDs.h"
+#include "sleep.h"
+#include "infrastructure.h"
 
 
 /* Print boot message */
@@ -45,6 +48,8 @@ static uint8_t boot_to_dfu = 0;
 
 static uint8_t capsense_channel = 0;
 
+uint32_t irqState;
+
 /* Main application */
 void appMain(gecko_configuration_t *pconfig)
 {
@@ -53,7 +58,7 @@ void appMain(gecko_configuration_t *pconfig)
 #endif
 
   /* Initialize debug prints. Note: debug prints are off by default. See DEBUG_LEVEL in app.h */
-  initLog();
+//  initLog();
 
   /* Initialize stack */
   gecko_init(pconfig);
@@ -73,7 +78,7 @@ void appMain(gecko_configuration_t *pconfig)
     /* if there are no events pending then the next call to gecko_wait_event() may cause
      * device go to deep sleep. Make sure that debug prints are flushed before going to sleep */
     if (!gecko_event_pending()) {
-      flushLog();
+//      flushLog();
     }
 
     /* Check for stack event. This is a blocking event listener. If you want non-blocking please see UG136. */
@@ -89,7 +94,7 @@ void appMain(gecko_configuration_t *pconfig)
     	midi_init_ble_connection();
     	LETIMERstart();
         bootMessage(&(evt->data.evt_system_boot));
-        printLog("boot event - starting advertising\r\n");
+//        printLog("boot event - starting advertising\r\n");
 
         /* Set advertising parameters. 100ms advertisement interval.
          * The first parameter is advertising set handle
@@ -104,13 +109,13 @@ void appMain(gecko_configuration_t *pconfig)
 
       case gecko_evt_le_connection_opened_id:
 
-        printLog("connection opened\r\n");
+//        printLog("connection opened\r\n");
         midi_ble_connected(evt->data.evt_le_connection_opened.connection);
         break;
 
       case gecko_evt_le_connection_closed_id:
 
-        printLog("connection closed, reason: 0x%2.2x\r\n", evt->data.evt_le_connection_closed.reason);
+//        printLog("connection closed, reason: 0x%2.2x\r\n", evt->data.evt_le_connection_closed.reason);
         midi_ble_disconnected();
 
         /* Check if need to boot to OTA DFU mode */
@@ -147,6 +152,11 @@ void appMain(gecko_configuration_t *pconfig)
 
       case gecko_evt_gatt_server_attribute_value_id:
     	  /* This event will handle Playing the notes and calling Codec APIs */
+//    	  CORE_DECLARE_IRQ_STATE;
+		  CORE_ENTER_CRITICAL();
+		  SLEEP_SleepBlockBegin(sleepEM0);
+		  CORE_EXIT_CRITICAL();
+    	  GPIO_PinOutSet(gpioPortD, 14);
     	  if (evt->data.evt_gatt_server_user_write_request.characteristic == gattdb_xgatt_midi) {
     	      // Write user supplied value to LEDs.
     		  BTVal_t BTV = { evt->data.evt_gatt_server_attribute_value.value.data[2],
@@ -155,6 +165,10 @@ void appMain(gecko_configuration_t *pconfig)
     		  MIDI_NoteOnOff (BTV, 0);
     	      gecko_cmd_gatt_server_send_user_write_response(evt->data.evt_gatt_server_user_write_request.connection, gattdb_xgatt_midi, bg_err_success);
     	  }
+//    	  CORE_DECLARE_IRQ_STATE;
+          CORE_ENTER_CRITICAL();
+          SLEEP_SleepBlockEnd(sleepEM0);
+          CORE_EXIT_CRITICAL();
     	  break;
       case gecko_evt_system_external_signal_id:
 
@@ -210,17 +224,18 @@ void appMain(gecko_configuration_t *pconfig)
 
 			  if(capsense_channel == ACMP_CHANNELS){
 
-				  printLog("Cap Measurement Finished");
+//				  printLog("Cap Measurement Finished");
 
 				  if(CAPSENSE_getPressed(0)){
-					GPIO_PinOutSet(gpioPortD, 14);
+//					GPIO_PinOutSet(gpioPortD, 14);
 				  }
 				  else{
-					GPIO_PinOutClear(gpioPortD, 14);
+//					GPIO_PinOutClear(gpioPortD, 14);
 				  }
 
 				  if(CAPSENSE_getPressed(1)){
 					GPIO_PinOutSet(gpioPortD, 15);
+					GPIO_PinOutClear(gpioPortD, 14);
 				  }
 				  else{
 					GPIO_PinOutClear(gpioPortD, 15);
@@ -234,7 +249,7 @@ void appMain(gecko_configuration_t *pconfig)
 			  break;
 
 		  default:
-			  printLog("UnknownExternalSignal");
+//			  printLog("UnknownExternalSignal");
 			  break;
     	  }
 
@@ -253,13 +268,13 @@ static void bootMessage(struct gecko_msg_system_boot_evt_t *bootevt)
   bd_addr local_addr;
   int i;
 
-  printLog("stack version: %u.%u.%u\r\n", bootevt->major, bootevt->minor, bootevt->patch);
+//  printLog("stack version: %u.%u.%u\r\n", bootevt->major, bootevt->minor, bootevt->patch);
   local_addr = gecko_cmd_system_get_bt_address()->address;
 
-  printLog("local BT device address: ");
+//  printLog("local BT device address: ");
   for (i = 0; i < 5; i++) {
-    printLog("%2.2x:", local_addr.addr[5 - i]);
+//    printLog("%2.2x:", local_addr.addr[5 - i]);
   }
-  printLog("%2.2x\r\n", local_addr.addr[0]);
+//  printLog("%2.2x\r\n", local_addr.addr[0]);
 #endif
 }

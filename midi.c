@@ -178,7 +178,7 @@ void midi_note_off(uint8 note, uint8 velocity)
   note_off.midi_event.note      = note;                     // Setting the note parameter
   note_off.midi_event.velocity  = velocity;                 // Setting the velocity parameter
 
-  printLog("Note Off\r\n");
+//  printLog("Note Off\r\n");
   gecko_cmd_gatt_server_send_characteristic_notification(connectionId, gattdb_xgatt_midi, 5, (uint8 const*)&note_off);
 }
 

@@ -33,7 +33,7 @@
 #if DEBUG_LEVEL
 #define initLog()     RETARGET_SerialInit()
 #define flushLog()    RETARGET_SerialFlush()
-#define printLog(...) printf(__VA_ARGS__)
+//#define printLog(...) printf(__VA_ARGS__)
 #else
 #define initLog()
 #define flushLog()

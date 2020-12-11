@@ -56,12 +56,10 @@ void WakeUp_Test ()
 void MIDI_NoteOnOff (BTVal_t BTV, uint8_t chan)
 {
 
-  if (BTV.NoteStatus > 1 || BTV.Pitch > 127 || BTV.Vel > 127 || chan > 15)
+  if (BTV.Pitch > 127 || BTV.Vel > 127 || chan > 15)
     return;
 
-  int NoteCom[2] =
-    { MIDI_NOTE_OFF, MIDI_NOTE_ON };
-  MIDI_Command (NoteCom[BTV.NoteStatus] | chan, BTV.Pitch, BTV.Vel);
+  MIDI_Command (BTV.NoteStatus & ~(0x7), BTV.Pitch, BTV.Vel);
 }
 
 void MIDI_ChannelBank (uint8_t chan)
