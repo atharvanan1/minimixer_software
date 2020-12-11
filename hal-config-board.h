@@ -50,14 +50,12 @@
 #define BSP_CLK_HFXO_CTUNE_TOKEN                      (0)
 // [CMU]$
 
-#warning "Make sure BSP_DCDC_PRESENT is set according to the custom board"
 // $[DCDC]
 #define BSP_DCDC_PRESENT                              (1)
 
 #define BSP_DCDC_INIT                                  EMU_DCDCINIT_DEFAULT
 // [DCDC]$
 
-#warning "Following pin mappings need to be set for your custom board when using printf..>"
 
 // $[SERIAL]
 #define BSP_SERIAL_APP_PORT                           (HAL_SERIAL_PORT_USART0)

@@ -147,16 +147,12 @@ void appMain(gecko_configuration_t *pconfig)
 
       case gecko_evt_gatt_server_attribute_value_id:
     	  /* This event will handle Playing the notes and calling Codec APIs */
-    	  printLog("Note play\r\n");
     	  if (evt->data.evt_gatt_server_user_write_request.characteristic == gattdb_xgatt_midi) {
     	      // Write user supplied value to LEDs.
     		  BTVal_t BTV = { evt->data.evt_gatt_server_attribute_value.value.data[2],
     				  	  	  evt->data.evt_gatt_server_attribute_value.value.data[3],
 							  evt->data.evt_gatt_server_attribute_value.value.data[4]};
     		  MIDI_NoteOnOff (BTV, 0);
-    	      printLog("Command - %02x; ", evt->data.evt_gatt_server_attribute_value.value.data[2]);
-    	      printLog("Note - %d; ", evt->data.evt_gatt_server_attribute_value.value.data[3]);
-    	      printLog("Velocity - %d\r\n", evt->data.evt_gatt_server_attribute_value.value.data[4]);
     	      gecko_cmd_gatt_server_send_user_write_response(evt->data.evt_gatt_server_user_write_request.connection, gattdb_xgatt_midi, bg_err_success);
     	  }
     	  break;
@@ -179,6 +175,7 @@ void appMain(gecko_configuration_t *pconfig)
     	    	for(int i = 0; i<MIDINoteDelay;i++)
     	    		;
     		  break;
+
     	  case ENC_2:
     		  if (!INRANGE(Reverb, MIDE_REVERB_MAX_VAL))
     		  		return;
@@ -190,8 +187,8 @@ void appMain(gecko_configuration_t *pconfig)
     		  		Reverb--;
     		  	MIDI_Reverb (Reverb, 0);
     	    	MIDI_NoteOnOff (test, 0);
-
     		  break;
+
     	  case ENC_3:
     		  if (!INRANGE(MIDINoteDelay, MAX_NOTE_DELAY))
     		  		return;
@@ -203,50 +200,42 @@ void appMain(gecko_configuration_t *pconfig)
     		  		MIDINoteDelay -= DELAY_INTERVAL;
     		  break;
 
-     // Capacitive Sensing Event
-      case gecko_evt_system_external_signal_id:
-    	  switch(evt->data.evt_system_external_signal.extsignals) {
-    	  	  case CAP_MEASURE_START:
-    	  		  capsense_channel = 0;
-    	  		  CAPSENSE_Start_Measurement(capsense_channel);
-    	  		  break;
+		  case CAP_MEASURE_START:
+			  capsense_channel = 0;
+			  CAPSENSE_Start_Measurement(capsense_channel);
+			  break;
 
-    	  	  case CAP_MEASURE_END:
-    	  		  capsense_channel++;
+		  case CAP_MEASURE_END:
+			  capsense_channel++;
 
-    	  		  if(capsense_channel == ACMP_CHANNELS){
+			  if(capsense_channel == ACMP_CHANNELS){
 
-    	  			  printLog("Cap Measurement Finished");
+				  printLog("Cap Measurement Finished");
 
-					  if(CAPSENSE_getPressed(0)){
-						GPIO_PinOutSet(gpioPortD, 14);
-					  }
-					  else{
-						GPIO_PinOutClear(gpioPortD, 14);
-					  }
+				  if(CAPSENSE_getPressed(0)){
+					GPIO_PinOutSet(gpioPortD, 14);
+				  }
+				  else{
+					GPIO_PinOutClear(gpioPortD, 14);
+				  }
 
-					  if(CAPSENSE_getPressed(1)){
-						GPIO_PinOutSet(gpioPortD, 15);
-					  }
-					  else{
-						GPIO_PinOutClear(gpioPortD, 15);
-					  }
-					  LETIMERstart();
-    	  		  }
+				  if(CAPSENSE_getPressed(1)){
+					GPIO_PinOutSet(gpioPortD, 15);
+				  }
+				  else{
+					GPIO_PinOutClear(gpioPortD, 15);
+				  }
+				  LETIMERstart();
+			  }
 
-    	  		  else{
-    	  			  CAPSENSE_Start_Measurement(capsense_channel);
-    	  		  }
+			  else{
+				  CAPSENSE_Start_Measurement(capsense_channel);
+			  }
+			  break;
 
-    	  		  break;
-
-    	  	  case ENC_0:
-
-    	  		  break;
-
-    	  	  default:
-    	  		  printLog("UnknownExternalSignal");
-    	  		  break;
+		  default:
+			  printLog("UnknownExternalSignal");
+			  break;
     	  }
 
     	  break;
