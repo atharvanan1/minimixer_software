@@ -38,6 +38,7 @@
 								<option id="com.silabs.ide.si32.gcc.cdt.managedbuild.tool.gnu.c.compiler.floatingpoint.type.1270168950" name="Floating-Point ABI" superClass="com.silabs.ide.si32.gcc.cdt.managedbuild.tool.gnu.c.compiler.floatingpoint.type" value="floatingpoint.type.softfp" valueType="enumerated"/>
 								<option id="gnu.c.compiler.option.include.paths.1735619062" name="Include paths (-I)" superClass="gnu.c.compiler.option.include.paths" valueType="includePath">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}}/source&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/platform/Device/SiliconLabs/EFR32BG13P/Include}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/platform/emlib/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/platform/CMSIS/Include}&quot;"/>
@@ -83,6 +84,7 @@
 								<option id="com.silabs.ide.si32.gcc.cdt.managedbuild.tool.gnu.assembler.flags.1098159264" name="Assembler flags" superClass="com.silabs.ide.si32.gcc.cdt.managedbuild.tool.gnu.assembler.flags" value="-c -x assembler-with-cpp -mfpu=fpv4-sp-d16 -mfloat-abi=softfp" valueType="string"/>
 								<option id="com.silabs.ide.si32.gcc.cdt.managedbuild.tool.gnu.assembler.includes.33054520" name="Include paths (-I)" superClass="com.silabs.ide.si32.gcc.cdt.managedbuild.tool.gnu.assembler.includes" valueType="includePath">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}}/source&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/platform/Device/SiliconLabs/EFR32BG13P/Include}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/platform/emlib/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/platform/CMSIS/Include}&quot;"/>
@@ -136,6 +138,7 @@
 								<option id="gnu.c.link.option.libs.1245681014" name="Libraries (-l)" superClass="gnu.c.link.option.libs" valueType="libs">
 									<listOptionValue builtIn="false" srcPrefixMapping="" srcRootPath="" value="m"/>
 								</option>
+								<option id="com.silabs.ide.si32.gcc.cdt.managedbuild.tool.gnu.c.linker.category.ordering.selection.1023485262" superClass="com.silabs.ide.si32.gcc.cdt.managedbuild.tool.gnu.c.linker.category.ordering.selection" value="./source/Blinky_LEDs.o;./source/Encoder.o;./source/MIDI_API.o;./source/app.o;./source/capsense.o;./source/letimer.o;./source/usart.o;./platform/service/sleeptimer/src/sl_sleeptimer.o;./platform/service/sleeptimer/src/sl_sleeptimer_hal_prortc.o;./platform/service/sleeptimer/src/sl_sleeptimer_hal_rtcc.o;./platform/emlib/src/em_acmp.o;./platform/emlib/src/em_assert.o;./platform/emlib/src/em_burtc.o;./platform/emlib/src/em_cmu.o;./platform/emlib/src/em_core.o;./platform/emlib/src/em_cryotimer.o;./platform/emlib/src/em_crypto.o;./platform/emlib/src/em_csen.o;./platform/emlib/src/em_emu.o;./platform/emlib/src/em_eusart.o;./platform/emlib/src/em_gpio.o;./platform/emlib/src/em_i2c.o;./platform/emlib/src/em_letimer.o;./platform/emlib/src/em_msc.o;./platform/emlib/src/em_rmu.o;./platform/emlib/src/em_rtcc.o;./platform/emlib/src/em_se.o;./platform/emlib/src/em_system.o;./platform/emlib/src/em_timer.o;./platform/emlib/src/em_usart.o;./platform/emdrv/sleep/src/sleep.o;./platform/Device/SiliconLabs/EFR32BG13P/Source/GCC/startup_efr32bg13p.o;./platform/Device/SiliconLabs/EFR32BG13P/Source/system_efr32bg13p.o;./hardware/kit/common/drivers/i2cspm.o;./hardware/kit/common/drivers/retargetio.o;./hardware/kit/common/drivers/retargetserial.o;./hardware/kit/common/bsp/bsp_stk.o;./app/bluetooth/common/util/infrastructure.o;./System_Init.o;./application_properties.o;./gatt_db.o;./gpiointerrupt.o;./init_app.o;./init_board.o;./init_mcu.o;./main.o;./midi.o;${workspace_loc:/${ProjName}/protocol/bluetooth/lib/EFR32BG13P/GCC/binapploader.o};${workspace_loc:/${ProjName}/platform/radio/rail_lib/autogen/librail_release/librail_efr32xg13_gcc_release.a};${workspace_loc:/${ProjName}/protocol/bluetooth/lib/EFR32BG13P/GCC/libmbedtls.a};${workspace_loc:/${ProjName}/protocol/bluetooth/lib/EFR32BG13P/GCC/libpsstore.a};${workspace_loc:/${ProjName}/protocol/bluetooth/lib/EFR32BG13P/GCC/libbluetooth.a};-lm" valueType="string"/>
 								<inputType id="cdt.managedbuild.tool.gnu.c.linker.input.1484386482" superClass="cdt.managedbuild.tool.gnu.c.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
 									<additionalInput kind="additionalinput" paths="$(LIBS)"/>
@@ -435,6 +438,10 @@
 							<inputType id="com.silabs.ide.si32.gcc.cdt.managedbuild.tool.gnu.c.compiler.input.1477497194" superClass="com.silabs.ide.si32.gcc.cdt.managedbuild.tool.gnu.c.compiler.input"/>
 						</tool>
 					</fileInfo>
+					<sourceEntries>
+						<entry excluding="source" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="source"/>
+					</sourceEntries>
 				</configuration>
 			</storageModule>
 			<storageModule moduleId="org.eclipse.cdt.core.externalSettings"/>
