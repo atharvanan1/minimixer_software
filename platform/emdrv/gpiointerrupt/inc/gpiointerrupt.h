@@ -46,11 +46,11 @@ extern "C" {
  * @addtogroup GPIOINT
  * @{
  ******************************************************************************/
-
+#define ODD_INT_MASK 0x0000AAAA
+#define EVEN_INT_MASK 0x00005555
 /*******************************************************************************
  *******************************   TYPEDEFS   **********************************
  ******************************************************************************/
-
 /**
  * @brief
  *  GPIO interrupt callback function pointer.
@@ -58,7 +58,7 @@ extern "C" {
  *   Parameters:
  *   @li intNo - The pin interrupt number the callback function is invoked for.
  */
-typedef void (*GPIOINT_IrqCallbackPtr_t)(uint8_t intNo);
+typedef void (*GPIOINT_IrqCallbackPtr_t)(uint32_t);
 
 /*******************************************************************************
  ******************************   PROTOTYPES   *********************************

@@ -47,6 +47,13 @@
 /* Application header */
 #include "app.h"
 
+
+#include "MIDI_API.h"
+#include "Commands.h"
+#include "usart.h"
+#include "Blinky_LEDs.h"
+#include "Encoder.h"
+
 /***********************************************************************************************//**
  * @addtogroup Application
  * @{
@@ -120,8 +127,14 @@ int main(void)
   initBoard();
   /* Initialize application */
   initApp();
+
+  ResetCodec();
+  initUSART0_MINI();
+  EncoderInit();
+  setGpioCallback();
+
   initVcomEnable();
-  /* Start application */
+
   appMain(&config);
 
 }
