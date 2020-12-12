@@ -66,8 +66,7 @@ void appMain(gecko_configuration_t *pconfig)
   /* Encoder Variable*/
   uint32_t Instrument = 0;
   uint32_t Reverb = 0;
-  uint32_t MIDINoteDelay = 0;
-  uint32_t BendVal = 0;
+  uint32_t BendVal = 1;
   uint32_t CapSense_Vol = 127;
 
   while (1) {
@@ -91,7 +90,7 @@ void appMain(gecko_configuration_t *pconfig)
       case gecko_evt_system_boot_id:
 
     	midi_init_ble_connection();
-    	LETIMERstart();
+
         bootMessage(&(evt->data.evt_system_boot));
 //        printLog("boot event - starting advertising\r\n");
 
@@ -110,6 +109,7 @@ void appMain(gecko_configuration_t *pconfig)
 
         midi_ble_connected(evt->data.evt_le_connection_opened.connection);
         GPIO_PinOutSet(gpioPortD, 15);
+        LETIMERstart();
         break;
 
       case gecko_evt_le_connection_closed_id:
@@ -177,11 +177,10 @@ void appMain(gecko_configuration_t *pconfig)
     		  if (!INRANGE(Instrument, MAX_INTS_VAL))
     			  break;
     		  	int SmePhs1 = isSamePhase(1);
-    		  	assert(SmePhs1 != -1);
-    		  	if ((SmePhs1 == YES) && LESSER(Instrument, MAX_INTS_VAL))
-    		  		Instrument++;
-    		  	else if ((SmePhs1 == 0) && GREATER(Instrument, 0))
-    		  		Instrument--;
+    		  	if ((SmePhs1 == YES))
+    		  		Instrument = (Instrument<=(MAX_INTS_VAL-1))? Instrument+1:0;
+    		  	else if ((SmePhs1 == 0))
+    		  		Instrument = (Instrument>1)? Instrument-1:0;
     		  	MIDI_SetInstrument ( Instrument,  0);
     		  break;
 
@@ -189,23 +188,23 @@ void appMain(gecko_configuration_t *pconfig)
     		  if (!INRANGE(Reverb, MIDE_REVERB_MAX_VAL))
     		  		break;
     		  	int SmePhs2 = isSamePhase(2);
-    		  	assert(SmePhs2 != -1);
-    		  	if ((SmePhs2 == YES) && LESSER(Reverb, MIDE_REVERB_MAX_VAL))
-    		  		Reverb+=16;
-    		  	else if (GREATER(Reverb, 16))
-    		  		Reverb-=16;
-    		  	 MIDI_Reverb (Reverb, 0);
+    		  	if ((SmePhs2 == YES)) /*15 counts to roll over*/
+    		  		Reverb = (Reverb<=(MIDE_REVERB_MAX_VAL-1))? Reverb+17:0;
+    		  	else
+    		  		Reverb = (Reverb>=17)? Reverb-17:0;
+
+    		  	MIDI_Reverb (Reverb, 0);
     		  break;
 
     	  case ENC_3:
-    		  if (!INRANGE(MIDINoteDelay, MAX_NOTE_DELAY))
+    		  if (!INRANGE(BendVal, 0x1000))
     			  break;
     		  	int SmePhs3 = isSamePhase(3);
-    		  	assert(SmePhs3 != -1);
-    		  	if ((SmePhs3 == YES) && LESSER(MIDINoteDelay, 1016))
-    		  		BendVal += 127;
-    		  	else if (GREATER(MIDINoteDelay, 127))
-    		  		BendVal -= 127;
+    		  	if ((SmePhs3 == YES)) /*10 counts to roll over*/
+    		  		BendVal = (BendVal<=(MIDI_MAX_PITCHBEND-1))? (BendVal<<1):1;
+				else
+					BendVal = (BendVal>1)? BendVal>>1:1024;
+
     		  	MIDI_PitchBend (BendVal, 0);
     		  break;
 
@@ -218,19 +217,11 @@ void appMain(gecko_configuration_t *pconfig)
 			  capsense_channel++;
 
 			  if(capsense_channel == ACMP_CHANNELS){
-				  if(CAPSENSE_getPressed(0)){
-//					GPIO_PinOutSet(gpioPortD, 14);
-				  }
-				  else{
-//					GPIO_PinOutClear(gpioPortD, 14);
-				  }
-
 				  if(CAPSENSE_getPressed(1)){
-//					GPIO_PinOutSet(gpioPortD, 15);
-//					GPIO_PinOutClear(gpioPortD, 14);
+				        GPIO_PinOutClear(gpioPortD, 15);
 				  }
 				  else{
-//					GPIO_PinOutClear(gpioPortD, 15);
+				        GPIO_PinOutSet(gpioPortD, 15);
 				  }
 				  LETIMERstart();
 			  }

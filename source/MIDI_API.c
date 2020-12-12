@@ -15,12 +15,7 @@
 #include "stdbool.h"
 #include "MIDI_API.h"
 
-/*Change all these values in sensor interrupt*/
-volatile uint8_t Enco_Inst = 79;
-volatile uint8_t Enco_Reverb = 0xFF;
-volatile uint32_t Enco_NtDly = MAX_NOTE_DELAY;
-volatile uint8_t CapSense_Vol = 0;
-volatile uint8_t BendVal = 0;
+
 
 
 volatile uint8_t MIDI_Flag = 0;
